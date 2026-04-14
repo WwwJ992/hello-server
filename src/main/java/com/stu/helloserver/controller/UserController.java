@@ -28,4 +28,11 @@ public class UserController {
         String data = "查询成功，正在返回 ID 为 " + id + " 的用户信息";
         return Result.success(data);
     }
+
+    @GetMapping("/page")
+    public Result<Object> getUserPage(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        return userService.getUserPage(pageNum, pageSize);
+    }
 }
