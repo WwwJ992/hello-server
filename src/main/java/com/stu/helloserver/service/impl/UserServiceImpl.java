@@ -1,9 +1,13 @@
 package com.stu.helloserver.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.stu.helloserver.common.Result;
 import com.stu.helloserver.common.ResultCode;
 import com.stu.helloserver.dto.UserDTO;
+import com.stu.helloserver.entity.User;
+import com.stu.helloserver.mapper.UserMapper;
 import com.stu.helloserver.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +49,15 @@ public class UserServiceImpl implements UserService {
 
         String token = "Bearer " + UUID.randomUUID().toString();
         return Result.success(token);
+    }
+
+    @Override
+    public Result<String> getUserById(Long id) {
+        User dbUser = userMapper.selectById(id);
+        if (dbUser == null) {
+            return Result.error(ResultCode.USER_NOT_EXIST);
+        }
+        return Result.success(dbUser.getUsername());
     }
 
     @Override
