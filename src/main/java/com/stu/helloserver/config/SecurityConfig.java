@@ -1,5 +1,7 @@
 package com.stu.helloserver.config;
 
+import com.stu.helloserver.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,10 +9,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    // 注入JWT过滤器
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,6 +39,9 @@ public class SecurityConfig {
                         // 其他所有请求都必须先认证
                         .anyRequest().authenticated()
                 )
+                // 把JWT过滤器加到UsernamePasswordAuthenticationFilter之前
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class)
                 // 关闭Spring Security默认的表单登录
                 .formLogin(form -> form.disable())
                 // 关闭HTTP Basic认证

@@ -17,7 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import com.stu.helloserver.security.JwtUtil;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -31,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private static final String CACHE_KEY_PREFIX = "user:detail:";
 
@@ -66,8 +69,9 @@ public class UserServiceImpl implements UserService {
             return Result.error(ResultCode.PASSWORD_ERROR);
         }
 
-        String token = "Bearer " + UUID.randomUUID();
-        return Result.success(token);
+        String jwtToken = jwtUtil.generateToken(dbUser.getUsername());
+
+        return Result.success(jwtToken);
     }
 
     @Override
