@@ -4,6 +4,7 @@ import com.stu.helloserver.common.Result;
 import com.stu.helloserver.model.dto.ChatRequestDTO;
 import com.stu.helloserver.model.service.ChatService;
 import com.stu.helloserver.model.vo.ChatResponseVO;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,9 +18,8 @@ public class ChatController {
     }
 
     @PostMapping
-    public Result<ChatResponseVO> chat(@RequestBody ChatRequestDTO requestDTO) {
-        String answer = chatService.chat(requestDTO.getMessage());
-        ChatResponseVO responseVO = new ChatResponseVO(requestDTO.getMessage(), answer);
+    public Result<ChatResponseVO> chat(@Valid @RequestBody ChatRequestDTO requestDTO) {
+        ChatResponseVO responseVO = chatService.chat(requestDTO);
         return Result.success(responseVO);
     }
 }
